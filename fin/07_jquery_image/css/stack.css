@@ -160,14 +160,20 @@ img {
     object-position: center;
 }
 
-.stacked-item.swipe-out {
-    transform: translate(48%, -16%) rotate(8deg) scale(1.03);
-    opacity: 0.9;
+.stacked-item {
+    position: absolute;
+    transition:
+        transform 0.42s ease,
+        opacity 0.42s ease;
 }
 
-.stacked-item.swipe-in {
-    transform: translate(-4%, 8%) scale(0.96);
-    opacity: 0.45;
+.stacked-item.swipe-out {
+    transform: translate(80%, -20%) rotate(18deg) scale(0.92) !important;
+    opacity: 0.9 !important;
+}
+
+.stacked-item.is-resetting {
+    transition: none !important;
 }
 
 @media (max-width: 900px) {

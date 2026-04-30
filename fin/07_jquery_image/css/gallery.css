@@ -269,6 +269,7 @@ img {
 
 .thumb-button {
     width: 100%;
+    min-height: 220px;
     padding: 0.45rem;
     border: 2px solid transparent;
     border-radius: 22px;
