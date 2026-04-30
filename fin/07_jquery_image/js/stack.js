@@ -3,6 +3,18 @@ $(function () {
     const $buttons = $('#next-button1, #next-button2');
     let isAnimating = false;
 
+    function waitForTransformEnd($element, callback) {
+        $element.off('transitionend.stack');
+        $element.on('transitionend.stack', function (event) {
+            if (event.target !== this || event.originalEvent.propertyName !== 'transform') {
+                return;
+            }
+
+            $element.off('transitionend.stack');
+            callback();
+        });
+    }
+
     function layoutStack() {
         const $items = $container.children('.stacked-item');
         const total = $items.length;
@@ -66,27 +78,33 @@ $(function () {
 
         const $topImage = getTopImage();
         setAnimating(true);
+
         $topImage.css({
             zIndex: 100,
-            transform: '',
-            opacity: '',
-        }).addClass('swipe-out');
+        }).removeClass('swipe-in is-resetting').addClass('swipe-out');
 
-        $topImage.one('transitionend', function () {
-            $topImage.prependTo($container).css({
+        waitForTransformEnd($topImage, function () {
+            $topImage
+                .addClass('is-resetting')
+                .removeClass('swipe-out')
+                .prependTo($container)
+                .css({
                 zIndex: 1,
                 left: 0,
                 top: 0,
+                transform: 'translate(-4%, 8%) scale(0.96)',
+                opacity: 0.45,
             });
 
-            requestAnimationFrame(function () {
-                $topImage.addClass('swipe-in').removeClass('swipe-out');
+            $topImage[0].offsetWidth;
 
-                $topImage.one('transitionend', function () {
-                    $topImage.removeClass('swipe-in');
-                    layoutStack();
+            requestAnimationFrame(function () {
+                waitForTransformEnd($topImage, function () {
                     setAnimating(false);
                 });
+
+                $topImage.removeClass('is-resetting');
+                layoutStack();
             });
         });
     }

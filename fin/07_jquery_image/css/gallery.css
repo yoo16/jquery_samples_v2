@@ -110,9 +110,30 @@ img {
     overflow: hidden;
 }
 
+.viewer-split {
+    padding: 1.6rem;
+}
+
+.viewer-split-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(320px, 0.85fr);
+    gap: 1.75rem;
+    align-items: stretch;
+}
+
+.viewer-media,
+.viewer-details {
+    min-width: 0;
+}
+
 .viewer-frame {
     aspect-ratio: 16 / 10;
     width: 100%;
+}
+
+.viewer-frame-large {
+    height: 100%;
+    min-height: 420px;
 }
 
 .viewer-frame img {
@@ -131,7 +152,9 @@ img {
 
 .viewer-title {
     margin: 0;
-    font-size: 2rem;
+    padding: .4rem 0;
+    font-size: 1.2rem;
+    font-weight: 700;
 }
 
 .viewer-copy {
@@ -150,34 +173,122 @@ img {
     font-weight: 700;
 }
 
+.viewer-details {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    padding: 0.25rem 0;
+}
+
+.viewer-heading {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.viewer-heading-meta {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.75rem;
+}
+
+.viewer-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 2rem;
+    padding: 0.4rem 0.8rem;
+    border-radius: 999px;
+    background: #fef3c7;
+    color: #92400e;
+    font-size: 0.8rem;
+    font-weight: 700;
+}
+
+.viewer-specs {
+    display: grid;
+    gap: 0.9rem;
+    margin: 0;
+}
+
+.viewer-spec {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1rem 1.1rem;
+    border-radius: 18px;
+    background: #f8fafc;
+    border: 1px solid #e5e7eb;
+}
+
+.viewer-spec dt {
+    color: #64748b;
+    font-size: 0.95rem;
+}
+
+.viewer-spec dd {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 700;
+    color: #0f172a;
+}
+
+.viewer-tags-panel h4 {
+    margin: 0 0 0.75rem;
+    font-size: 1rem;
+}
+
+.viewer-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+}
+
+.viewer-tags span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.45rem 0.8rem;
+    border-radius: 999px;
+    background: #e0f2fe;
+    color: #075985;
+    font-size: 0.85rem;
+    font-weight: 700;
+}
+
 .thumb-list {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
-    gap: 0.9rem;
-    margin: 1rem 0;
-    padding: 0;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: .5rem;
+    margin: 0;
+    padding: 1rem;
     list-style: none;
 }
 
 .thumb-button {
     width: 100%;
-    padding: 0.1rem;
+    padding: 0.45rem;
     border: 2px solid transparent;
-    border-radius: 18px;
+    border-radius: 22px;
     background: #ffffff;
     cursor: pointer;
     transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 12px 24px rgba(15, 23, 42, 0.08);
+    text-align: left;
 }
 
 .thumb-button:hover,
 .thumb-button:focus-visible {
     transform: translateY(-2px);
-    border-color: #135e00;
+    border-color: #0f766e;
     outline: none;
 }
 
 .thumb-button.is-active {
-    border-color: #135e00;
+    border-color: #0f766e;
+    box-shadow: 0 16px 28px rgba(15, 118, 110, 0.18);
 }
 
 .thumb-image {
@@ -185,6 +296,23 @@ img {
     width: 100%;
     border-radius: 14px;
     object-fit: cover;
+}
+
+.thumb-body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    padding: 0.9rem 0.55rem 0.35rem;
+}
+
+.thumb-title {
+    color: #0f172a;
+    font-size: 0.8rem;
+}
+
+.thumb-meta {
+    color: #64748b;
+    font-size: 0.82rem;
 }
 
 .card-grid {
@@ -359,8 +487,35 @@ img {
         align-items: flex-start;
     }
 
+    .viewer-split {
+        padding: 1.1rem;
+    }
+
+    .viewer-split-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .viewer-frame-large {
+        min-height: 280px;
+    }
+
+    .viewer-heading {
+        flex-direction: column;
+    }
+
+    .viewer-heading-meta {
+        align-items: flex-start;
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+
     .gallery-layout,
     .card-grid {
+        padding: 1.25rem;
+    }
+
+    .thumb-list {
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
         padding: 1.25rem;
     }
 }
