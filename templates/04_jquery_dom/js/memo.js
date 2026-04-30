@@ -14,6 +14,7 @@ $(function () {
     const memoTextClass = "memo-text break-words text-[15px] leading-6 text-slate-700";
     const inlineEditClass = "memo-editor w-full rounded-xl border border-sky-300 bg-white px-3 py-2 text-[15px] leading-6 text-slate-700 outline-none ring-4 ring-sky-100";
     const deleteBtnClass = "shrink-0 rounded-full bg-rose-500 px-3 py-1 text-sm font-semibold text-white transition hover:bg-rose-600";
+    const hintClass = "mt-1 text-xs text-slate-400";
     const checkboxClass = "mt-1 h-5 w-5 shrink-0 rounded border-slate-300 text-sky-500 focus:ring-sky-300";
 
     /**
@@ -45,22 +46,196 @@ $(function () {
     }
 
     /**
-     * インライン編集を終了
+     * 新規メモ作成
      */
-    function finishInlineEdit(li, input, text, save) {
-        // TODO: インライン入力値の取得
-        const nextValue = "";
-        // 値があればテキストを置き換える
-        if (save && nextValue) {
-            text.text(nextValue);
-        }
-        // インライン入力要素を削除
-        input.remove();
-        // テキストを表示
-        text.removeClass("hidden");
-        //編集フラグを削除
-        li.removeData("editing");
+    function newItem() {
+        // 現在の入力値を取得
+        const value = getInputValue();
+        // liタグの生成
+        const li = $("<li>", { class: defaultClass });
+
+        // TODO: チェックボックスの生成: type="checkbox"
+        const checkbox = $("<input>", {
+            type: "",
+            "aria-label": "完了",
+            class: checkboxClass,
+        });
+        // テキストエリアの生成
+        const textWrap = $("<div>", { class: "min-w-0 flex-1" });
+        // テキストの生成
+        const text = $("<span>", {
+            class: memoTextClass,
+            text: value,
+        });
+        // pタグでヒントの生成
+        const hint = $("<p>", {
+            class: hintClass,
+            text: "クリックで選択 / ダブルクリックで編集",
+        });
+        textWrap.append(text, hint);
+
+        // 削除ボタンの生成
+        const button = $("<button>", {
+            type: "button",
+            class: deleteBtnClass,
+            text: "削除",
+        });
+
+        // 削除ボタンのクリックイベント
+        button.on("click", function (event) {
+            // クリックイベントの伝播を停止
+            event.stopPropagation();
+            // 選択中のliタグ
+            if (selected.is(li)) {
+                selected = $();
+            }
+            // TODO: liタグの削除
+
+            updateMeta();
+        });
+
+        // チェックボックスのクリックイベント
+        checkbox.on("click", function (event) {
+            event.stopPropagation();
+            // トグルクラスの付け外し
+            text.toggleClass(doneClass, $(this).prop("checked"));
+        });
+
+        // クリックイベントで li を選択
+        li.on("click", function (event) {
+            selectItem(li);
+        });
+
+        // ダブルクリックイベントでインライン編集を開始
+        li.on("dblclick", function () {
+            if (li.data("editing")) {
+                return;
+            }
+            selectItem(li);
+            startInlineEdit(li, text);
+        });
+
+        // liタグに要素を追加: チェックボックス、テキストエリア、削除ボタン
+        li.append(checkbox, textWrap, button);
+
+        return li;
     }
+
+    /**
+     * フラッシュメッセージの表示
+     */
+    function flashMessage(text, tone = "info") {
+        $("#message")
+            .removeClass(Object.values(messageToneClass).join(" "))
+            .addClass(messageBaseClass + " " + messageToneClass[tone])
+            .text(text);
+
+        // 2秒後にフラッシュメッセージをクリア
+        setTimeout(function () {
+            $("#message")
+                .removeClass(Object.values(messageToneClass).join(" "))
+                .addClass(messageBaseClass)
+                .text("");
+        }, 2000);
+    }
+
+    /**
+     * 入力欄から値を取得す
+     */
+    function getInputValue() {
+        return $("#input-text").val().trim() || "new memo";
+    }
+
+    /**
+     * 入力欄をクリアしてフォーカス
+     */
+    function clearInput() {
+        $("#input-text").val("").trigger("focus");
+    }
+
+    /**
+     * メモの追加（末尾に追加）: append
+     */
+    $("#btn-append").on("click", function () {
+        const element = newItem();
+        // TODO: id="item-list" の末尾に追加
+
+        // メタ情報の更新
+        updateMeta();
+        // 入力欄をクリアしてフォーカス
+        clearInput();
+    });
+
+    /**
+     * メモの追加（先頭に追加）: prepend
+     */
+    $("#btn-prepend").on("click", function () {
+        const element = newItem();
+        // TODO: id="item-list" の先頭に追加
+
+        // メタ情報の更新
+        updateMeta();
+        // 入力欄をクリアしてフォーカス
+        clearInput();
+    });
+
+    /**
+     * メモの追加（選択中のメモの前に挿入）: before
+     */
+    $("#btn-before").on("click", function () {
+        if (selected.length) {
+            const element = newItem();
+            // TODO: 選択中のメモの前に挿入
+
+            // メタ情報の更新
+            updateMeta();
+            // 入力欄をクリアしてフォーカス
+            clearInput();
+        } else {
+            flashMessage("メモを選択してください", "warning");
+        }
+    });
+
+    /**
+     * メモの追加（選択中のメモの後に追加）: after
+     */
+    $("#btn-after").on("click", function () {
+        if (selected.length) {
+            const element = newItem();
+            // TODO: 選択中のメモの後に追加
+
+            // メタ情報の更新
+            updateMeta();
+            // 入力欄をクリアしてフォーカス
+            clearInput();
+        } else {
+            flashMessage("メモを選択してください", "warning");
+        }
+    });
+
+    /**
+     * メモの追加（テキスト入力欄でEnterキー）: keydown
+     */
+    $("#input-text").on("keydown", function (event) {
+        const key = event.key || event.originalEvent?.key;
+
+        // TODO: 日本語入力中のEnterキーを無視
+        // const isComposing = event.originalEvent?.isComposing || event.isComposing || event.which === 229;
+        // if (isComposing) {
+        //     return;
+        // }
+
+        // Enterキーでメモを追加
+        if (key === "Enter" || event.which === 13 || event.keyCode === 13) {
+            event.preventDefault();
+            // TODO: メモを追加
+            // const element = newItem();
+            // element.appendTo("#item-list");
+            // selectItem(element);
+            // updateMeta();
+            // clearInput();
+        }
+    });
 
     /**
      * インライン編集開始
@@ -126,221 +301,22 @@ $(function () {
     }
 
     /**
-     * 新規メモ作成
+     * インライン編集を終了
      */
-    function newItem() {
-        // 現在の入力値を取得
-        const value = getInputValue();
-        // liタグの生成
-        const li = $("<li>", { class: defaultClass });
-
-        // TODO: チェックボックスの生成: type="checkbox"
-        const checkbox = $("<input>", {
-            type: "",
-            "aria-label": "完了",
-            class: "mt-1 h-5 w-5 shrink-0 rounded border-slate-300 text-sky-500 focus:ring-sky-300",
-        });
-        // テキストエリアの生成
-        const textWrap = $("<div>", { class: "min-w-0 flex-1" });
-        // テキストの生成
-        const text = $("<span>", {
-            class: memoTextClass,
-            text: value,
-        });
-        // pタグでヒントの生成
-        const hint = $("<p>", {
-            class: "mt-1 text-xs text-slate-400",
-            text: "クリックで選択 / ダブルクリックで編集",
-        });
-        textWrap.append(text, hint);
-
-        // 削除ボタンの生成
-        const button = $("<button>", {
-            type: "button",
-            class: "shrink-0 rounded-full bg-rose-500 px-3 py-1 text-sm font-semibold text-white transition hover:bg-rose-600",
-            text: "削除",
-        });
-
-        // 削除ボタンのクリックイベント
-        button.on("click", function (event) {
-            // クリックイベントの伝播を停止
-            event.stopPropagation();
-            // 選択中のliタグ
-            if (selected.is(li)) {
-                selected = $();
-            }
-            // TODO: liタグの削除
-
-            updateMeta();
-        });
-
-        // チェックボックスのクリックイベント
-        checkbox.on("click", function (event) {
-            event.stopPropagation();
-            // トグルクラスの付け外し
-            text.toggleClass(doneClass, $(this).prop("checked"));
-        });
-
-        // クリックイベントで li を選択
-        li.on("click", function () {
-            selectItem(li);
-        });
-
-        // ダブルクリックイベントでインライン編集を開始
-        li.on("dblclick", function () {
-            if (li.data("editing")) {
-                return;
-            }
-            selectItem(li);
-            startInlineEdit(li, text);
-        });
-
-        // liタグに要素を追加: チェックボックス、テキストエリア、削除ボタン
-        li.append(checkbox, textWrap, button);
-
-        return li;
-    }
-
-    /**
-     * フラッシュメッセージの表示
-     */
-    function flashMessage(text, tone = "info") {
-        $("#message")
-            .removeClass(Object.values(messageToneClass).join(" "))
-            .addClass(messageBaseClass + " " + messageToneClass[tone])
-            .text(text);
-
-        // 2秒後にフラッシュメッセージをクリア
-        setTimeout(function () {
-            $("#message")
-                .removeClass(Object.values(messageToneClass).join(" "))
-                .addClass(messageBaseClass)
-                .text("");
-        }, 2000);
-    }
-
-    /**
-     * 入力欄から値を取得す
-     */
-    function getInputValue() {
-        return $("#input-text").val().trim() || "new memo";
-    }
-
-    /**
-     * 入力欄をクリアしてフォーカス
-     */
-    function clearInput() {
-        $("#input-text").val("").trigger("focus");
-    }
-
-    /**
-     * メモの追加（末尾に追加）: append
-     */
-    $("#btn-append").on("click", function () {
-        const element = newItem();
-        // TODO: id="item-list" の末尾に追加
-
-        // 選択中のメモを設定
-        selectItem(element);
-        // メタ情報の更新
-        updateMeta();
-        // 入力欄をクリアしてフォーカス
-        clearInput();
-    });
-
-    /**
-     * メモの追加（先頭に追加）: prepend
-     */
-    $("#btn-prepend").on("click", function () {
-        const element = newItem();
-        // TODO: id="item-list" の先頭に追加
-
-        // 選択中のメモを設定
-        selectItem(element);
-        // メタ情報の更新
-        updateMeta();
-        // 入力欄をクリアしてフォーカス
-        clearInput();
-    });
-
-    /**
-     * メモの追加（選択中のメモの前に挿入）: before
-     */
-    $("#btn-before").on("click", function () {
-        if (selected.length) {
-            const element = newItem();
-            // TODO: 選択中のメモの前に挿入
-
-            // 選択中のメモを設定
-            selectItem(element);
-            // メタ情報の更新
-            updateMeta();
-            // 入力欄をクリアしてフォーカス
-            clearInput();
-        } else {
-            flashMessage("メモを選択してください", "warning");
+    function finishInlineEdit(li, input, text, save) {
+        // TODO: インライン入力値の取得
+        const nextValue = "";
+        // 値があればテキストを置き換える
+        if (save && nextValue) {
+            text.text(nextValue);
         }
-    });
-
-    /**
-     * メモの追加（選択中のメモの後に追加）: after
-     */
-    $("#btn-after").on("click", function () {
-        if (selected.length) {
-            const element = newItem();
-            // TODO: 選択中のメモの後に追加
-
-            // 選択中のメモを設定
-            selectItem(element);
-            // メタ情報の更新
-            updateMeta();
-            // 入力欄をクリアしてフォーカス
-            clearInput();
-        } else {
-            flashMessage("メモを選択してください", "warning");
-        }
-    });
-
-    /**
-     * メモの削除（選択中のメモを削除）: remove
-     */
-    $("#btn-remove").on("click", function () {
-        if (selected.length) {
-            // TODO: 選択中のメモを削除
-            selected.remove();
-
-            // 選択中のメモをクリア
-            selected = $();
-            // メタ情報の更新
-            updateMeta();
-        } else {
-            flashMessage("メモを選択してください", "warning");
-        }
-    });
-
-    /**
-     * メモの追加（テキスト入力欄でEnterキー）: keydown
-     */
-    $("#input-text").on("keydown", function (event) {
-        const key = event.key || event.originalEvent?.key;
-
-        // TODO: 日本語入力中のEnterキーを無視
-        // const isComposing = event.originalEvent?.isComposing || event.isComposing || event.which === 229;
-        // if (isComposing) {
-        //     return;
-        // }
-
-        // Enterキーでメモを追加
-        if (key === "Enter" || event.which === 13 || event.keyCode === 13) {
-            event.preventDefault();
-            // TODO: メモを追加
-            // const element = newItem();
-            // element.appendTo("#item-list");
-            // selectItem(element);
-            // updateMeta();
-            // clearInput();
-        }
-    });
+        // インライン入力要素を削除
+        input.remove();
+        // テキストを表示
+        text.removeClass("hidden");
+        //編集フラグを削除
+        li.removeData("editing");
+    }
 
     updateMeta();
 });

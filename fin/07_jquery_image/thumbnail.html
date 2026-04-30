@@ -7,34 +7,70 @@
     <title>Thumbnail View</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://code.jquery.com/jquery-4.0.0.min.js"></script>
+    <link rel="stylesheet" href="css/gallery.css">
 </head>
 
-<body class="bg-gray-100">
-    <header class="bg-gray-800 text-white py-16">
-        <h1 class="text-center text-4xl font-bold">Cafe JS</h1>
-    </header>
-    <main class="mx-auto p-6 bg-white mt-6 max-w-4xl">
-        <div class="mb-6 flex justify-center">
-            <img id="main-image" src="images/item1.jpg" alt="Photo" class="w-auto h-72 rounded-lg shadow-md">
-        </div>
-        <ul class="flex justify-center gap-4">
-            <li>
-                <img class="thumbnail w-20 h-12 rounded shadow" src="images/item1.jpg">
-            </li>
-            <li>
-                <img class="thumbnail w-20 h-12 rounded shadow" src="images/item2.jpg">
-            </li>
-            <li>
-                <img class="thumbnail w-20 h-12 rounded shadow" src="images/item3.jpg">
-            </li>
-            <li>
-                <img class="thumbnail w-20 h-12 rounded shadow" src="images/item4.jpg">
-            </li>
-            <li>
-                <img class="thumbnail w-20 h-12 rounded shadow" src="images/item5.jpg">
-            </li>
-        </ul>
-    </main>
+<body>
+    <div class="page-shell">
+        <header class="hero">
+            <div class="hero-inner">
+                <h1>Cafe JS Gallery</h1>
+                <p>サムネイルから写真を切り替える、実用的な商品ギャラリーです。</p>
+            </div>
+        </header>
+        <main class="content-shell">
+            <section>
+                <ul class="thumb-list">
+                    <li>
+                        <button class="thumbnail thumb-button is-active" data-title="ストロベリーチーズケーキ"
+                            data-copy="滑らかなチーズクリームと甘酸っぱいイチゴの組み合わせ。" data-index="1" type="button">
+                            <img class="thumb-image" src="images/item1.jpg" alt="ストロベリーチーズケーキ">
+                        </button>
+                    </li>
+                    <li>
+                        <button class="thumbnail thumb-button" data-title="チョコレートパンケーキ"
+                            data-copy="濃厚なキャラメルソースとイチゴを添えた贅沢なパンケーキ。" data-index="2" type="button">
+                            <img class="thumb-image" src="images/item2.jpg" alt="チョコレートパンケーキ">
+                        </button>
+                    </li>
+                    <li>
+                        <button class="thumbnail thumb-button" data-title="チョコレートパンケーキ"
+                            data-copy="キャラメルソースとチョコレートをふんだんに使用した食感のあるパンケーキ。" data-index="3" type="button">
+                            <img class="thumb-image" src="images/item3.jpg" alt="チョコレートパンケーキ">
+                        </button>
+                    </li>
+                    <li>
+                        <button class="thumbnail thumb-button" data-title="ベリーパンケーキ"
+                            data-copy="ふんわりしたパンケーキに甘酸っぱいベリーとシロップを添えました。" data-index="4" type="button">
+                            <img class="thumb-image" src="images/item4.jpg" alt="ベリーパンケーキ">
+                        </button>
+                    </li>
+                    <li>
+                        <button class="thumbnail thumb-button" data-title="ストロベリーシフォン"
+                            data-copy="ふわふわのシフォンケーキに甘いクリームと新鮮なイチゴをトッピング。" data-index="5" type="button">
+                            <img class="thumb-image" src="images/item5.jpg" alt="ストロベリーシフォン">
+                        </button>
+                    </li>
+                </ul>
+            </section>
+            <section class="panel">
+                <div class="gallery-layout">
+                    <article class="viewer-card">
+                        <div class="viewer-caption">
+                            <div>
+                                <h3 id="main-title" class="viewer-title">ストロベリーチーズケーキ</h3>
+                                <p id="main-copy" class="viewer-copy">滑らかなチーズクリームと甘酸っぱいイチゴの組み合わせ。</p>
+                            </div>
+                            <div id="main-count" class="viewer-count">1 / 5</div>
+                        </div>
+                        <div class="viewer-frame">
+                            <img id="main-image" src="images/item1.jpg" alt="ストロベリーチーズケーキ">
+                        </div>
+                    </article>
+                </div>
+            </section>
+        </main>
+    </div>
 
     <script src="js/thumbnail.js"></script>
 </body>

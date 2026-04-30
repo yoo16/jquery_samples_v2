@@ -1,81 +1,98 @@
-// jQuery animate()
-$(document).ready(function () {
-    // 次へボタンのクリックイベント1
-    $('#next-button1').on('click', function () {
-        stackAnimation1();
-    });
+$(function () {
+    const $container = $('#image-container');
+    const $buttons = $('#next-button1, #next-button2');
+    let isAnimating = false;
 
-    // 次へボタンのクリックイベント2
-    $('#next-button2').on('click', function () {
-        stackAnimation2();
-    });
-});
+    function layoutStack() {
+        const $items = $container.children('.stacked-item');
+        const total = $items.length;
 
-// クリック後の処理
-function stackAnimation1() {
-    // id=image-container の子 class=stacked-item のスタックリスト取得（画像リスト）
-    const images = $('#image-container').children('.stacked-item');
-    // TODO: imagesから 最上位のスタック取得: last()
-    const topImage = images.last()
-    const marginTop = 50;
-    // $ マークはずしてね
-    topImage
-        .animate({
-            opacity: 0.8,
-            left: '100%',
-            marginTop: '-' + marginTop + 'px',
-        }, 500,
-            // アニメーション終了後の処理
-            function () {
-                resetPosition()
-            }
-        );
-
-    // 元に戻すアニメーション
-    function resetPosition() {
-        // TODO: 重ね順をオート設定: css('z-index', 'auto')
-        topImage.css('z-index', 'auto')
-        // TODO: 元の位置に戻すアニメーション
-        // 1. topImage を id=image-container の先頭に移動: prependTo()
-        topImage.prependTo("#image-container")
-        // 2. アニメーション: left: 0, top: marginTop, opacity: 0
-        topImage.animate({
-            opacity: 1, 
-            left: 0,
-            marginTop: 0,
-        })
-    }
-}
-
-function stackAnimation2() {
-    // id=image-container の子 class=stacked-item のスタックリスト取得（画像リスト）
-    const images = $('#image-container').children('.stacked-item');
-    // 最上位のスタック取得: last()
-    const topImage = images.last();
-
-    // TODO: フェードアウト: class=swipe-out
-    topImage.addClass('swipe-out')
-
-    // 移動終了後の処理
-    // CSSアニメーションが終わったら実行（1度だけ）
-    topImage.one('transitionend', function () {
-        // 要素を先頭に移動
-        topImage.prependTo('#image-container');
-        swipeIn();
-    });
-
-    // スライドインアニメーション
-    function swipeIn() {
-        setTimeout(() => {
-            // スライドアウトアニメーション削除
-            topImage.removeClass('swipe-out');
-            // スライドインアニメーション追加
-            topImage.addClass('swipe-in');
-
-            topImage.one('transitionend', function () {
-                // スライドインアニメーション削除
-                topImage.removeClass('swipe-in');
+        $items.each(function (index) {
+            const depth = total - index - 1;
+            $(this).css({
+                zIndex: index + 1,
+                transform: `translate(${depth * 12}px, ${depth * 12}px) scale(${1 - depth * 0.03})`,
+                opacity: Math.max(0.42, 1 - depth * 0.12),
             });
-        }, 100);
+        });
     }
-}
+
+    function setAnimating(state) {
+        isAnimating = state;
+        $buttons.prop('disabled', state);
+    }
+
+    function getTopImage() {
+        return $container.children('.stacked-item').last();
+    }
+
+    function stackAnimation1() {
+        if (isAnimating) {
+            return;
+        }
+
+        const $topImage = getTopImage();
+        setAnimating(true);
+
+        $topImage.css({
+            zIndex: 100,
+            transform: 'translate(0, 0) scale(1)',
+            opacity: 1,
+        }).animate({
+            left: '48%',
+            top: '-12%',
+            opacity: 0.9,
+        }, 420, function () {
+            $topImage.prependTo($container).css({
+                left: '-4%',
+                top: '8%',
+                opacity: 0.45,
+                zIndex: 1,
+            }).animate({
+                left: 0,
+                top: 0,
+                opacity: 1,
+            }, 320, function () {
+                layoutStack();
+                setAnimating(false);
+            });
+        });
+    }
+
+    function stackAnimation2() {
+        if (isAnimating) {
+            return;
+        }
+
+        const $topImage = getTopImage();
+        setAnimating(true);
+        $topImage.css({
+            zIndex: 100,
+            transform: '',
+            opacity: '',
+        }).addClass('swipe-out');
+
+        $topImage.one('transitionend', function () {
+            $topImage.prependTo($container).css({
+                zIndex: 1,
+                left: 0,
+                top: 0,
+            });
+
+            requestAnimationFrame(function () {
+                $topImage.addClass('swipe-in').removeClass('swipe-out');
+
+                $topImage.one('transitionend', function () {
+                    $topImage.removeClass('swipe-in');
+                    layoutStack();
+                    setAnimating(false);
+                });
+            });
+        });
+    }
+
+    $('#next-button1').on('click', stackAnimation1);
+    $('#next-button2').on('click', stackAnimation2);
+
+    layoutStack();
+});
