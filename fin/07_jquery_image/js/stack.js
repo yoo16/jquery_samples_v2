@@ -37,6 +37,6 @@ function stackAnimation() {
                 // スライドインアニメーション削除
                 topImage.removeClass('swipe-in');
             });
-        }, 100);
+        }, 10);
     }
 }
