@@ -1,60 +1,25 @@
 $(document).ready(function () {
-    const animations = {
-        // TODO: fadeInエフェクト
-        fadeIn: ($el) => {
-            $el.css({ transform: 'translateY(30px)', opacity: 0, visibility: 'visible' })
-                .animate({ opacity: 1 }, {
-                    duration: 1000,
-                    step: function (now) {
-                        const y = 30 * (1 - now);
-                        $(this).css('transform', `translateY(${y}px)`);
-                    }
-                });
-        },
-        // TODO: slideInエフェクト
-        slideIn: ($el) => {
-            $el.css({ width: '0%', opacity: 0, visibility: 'visible' })
-                .animate({ width: '100%', opacity: 1 }, 1200);
-        },
-        // TODO: fadeLeftエフェクト
-        slideLeft: ($el) => {
-            const startX = 500;
-            $el.css({ transform: `translateX(${startX}px)`, opacity: 0, visibility: 'visible' })
-                .animate({ opacity: 1 }, {
-                    duration: 1000,
-                    step: function (now) {
-                        const x = startX * (1 - now);
-                        $(this).css('transform', `translateX(${x}px)`);
-                    }
-                });
-        }
-    };
+    const $parallax = $('#parallax');
+    const $parallaxContent = $('#parallaxContent');
 
-    // TODO: IntersectionObserverの設定
-    const observer = new IntersectionObserver((entries) => {
-        // entries: 監視対象の配列
-        entries.forEach(entry => {
-            // TODO: 要素が表示領域に入ったか確認
-            if (entry.isIntersecting) {
-                const $target = $(entry.target);
-                // TODO: data-animate プロパティ取得
-                const type = $target.data('animate');
-                if (animations[type]) {
-                    // クラスを削除してからアニメーション開始
-                    $target.removeClass('animate-init');
-                    // TODO: アニメーションの実行: animations[type]($target);
-                    animations[type]($target)
-                }
-                // TODO: 監視を解除 （１度きりのエフェクトにしたい場合）: unobserve(entry.target)
-                observer.unobserve(entry.target)
-            }
-        });
-        // 領域境界調整
-    }, { rootMargin: "-10% 0px" });
+    // TODO: スクロールイベントの監視
+    $(window).on('scroll', function () {
+        // TODO: スクロール位置を取得: $(window).scrollTop()
+        const scrollY = $(window).scrollTop();
+        // TODO: 速度を調整: scrollY * 0.5
+        const speed = scrollY * 0.5;
 
-    // data-animate属性を持つ要素を監視
-    $('[data-animate]').each(function () {
-        // TODO: 監視開始: observe(this)
-        observer.observe(this)
+        // TODO: パララックス対象の高さを取得: $parallax.outerHeight()
+        const parallaxHeight = $parallax.outerHeight();
+
+        // TODO: 背景画像を移動: $parallax.css()
+        // background-position-y: -speed + 'px'
+        $parallax.css('background-position-y', `-${speed}px`);
+
+        // 文字コンテンツの移動（スクロールに合わせてゆっくり追従）
+        const translateY = Math.min(parallaxHeight / 2, scrollY * 0.2) - 200;
+        // TODO: $parallaxContent.css()
+        // transform: translateY
+        $parallaxContent.css('transform', `translateY(${translateY}px)`);
     });
 });

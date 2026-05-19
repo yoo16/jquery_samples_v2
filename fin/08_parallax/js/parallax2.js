@@ -1,110 +1,60 @@
-$(function () {
-    const $win = $(window);
-
-    // ====================================
-    // 1. 多層レイヤーパララックス
-    // ====================================
-    function updateLayers() {
-        const scrollTop = $win.scrollTop();
-        $('.layer').each(function () {
-            const speed = parseFloat($(this).data('speed'));
-            const yPos = -(scrollTop * speed);
-            $(this).css('transform', `translate3d(0, ${yPos}px, 0)`);
-        });
-
-        // ヒーロータイトルのフェードアウト + 上方向スライド
-        const $title = $('[data-hero-title]');
-        const heroHeight = $('.hero').outerHeight();
-        const progress = Math.min(scrollTop / heroHeight, 1);
-        $title.css({
-            'transform': `translate(-50%, calc(-50% - ${scrollTop * 0.5}px))`,
-            'opacity': 1 - progress * 1.5
-        });
-    }
-
-    // ====================================
-    // 2. 背景テキストの横方向パララックス
-    // ====================================
-    function updateBgText() {
-        const scrollTop = $win.scrollTop();
-        const $bgText = $('.bg-text');
-        const speed = parseFloat($bgText.data('speed-x') || 0.3);
-        const offset = scrollTop * speed;
-        $bgText.css('transform', `translateY(-50%) translateX(${-offset}px)`);
-    }
-
-    // ====================================
-    // 3. カードの個別速度パララックス
-    // ====================================
-    function updateCards() {
-        const scrollTop = $win.scrollTop();
-        const winHeight = $win.height();
-
-        $('[data-card-speed]').each(function () {
-            const $card = $(this);
-            const speed = parseFloat($card.data('card-speed'));
-            const cardTop = $card.offset().top;
-            // 画面に入ってきたところを基準にオフセット計算
-            const relative = scrollTop + winHeight - cardTop;
-            if (relative > 0 && relative < winHeight * 2) {
-                const yPos = -(relative - winHeight) * speed;
-                $card.css('transform', `translate3d(0, ${yPos}px, 0)`);
-            }
-        });
-    }
-
-    // ====================================
-    // 4. スクロールプログレスバー
-    // ====================================
-    function updateProgress() {
-        const docHeight = $(document).height() - $win.height();
-        const progress = ($win.scrollTop() / docHeight) * 100;
-        $('.scroll-progress').css('width', progress + '%');
-    }
-
-    // ====================================
-    // 5. フェードイン要素
-    // ====================================
-    function updateFadeUp() {
-        const scrollBottom = $win.scrollTop() + $win.height();
-        $('[data-fade-up]').each(function () {
-            const $el = $(this);
-            if (scrollBottom > $el.offset().top + 100) {
-                $el.css({
-                    'opacity': 1,
-                    'transform': 'translateY(0)'
+$(document).ready(function () {
+    const animations = {
+        // TODO: fadeInエフェクト
+        fadeIn: ($el) => {
+            $el.css({ transform: 'translateY(30px)', opacity: 0, visibility: 'visible' })
+                .animate({ opacity: 1 }, {
+                    duration: 1000,
+                    step: function (now) {
+                        const y = 30 * (1 - now);
+                        $(this).css('transform', `translateY(${y}px)`);
+                    }
                 });
+        },
+        // TODO: slideInエフェクト
+        slideIn: ($el) => {
+            $el.css({ width: '0%', opacity: 0, visibility: 'visible' })
+                .animate({ width: '100%', opacity: 1 }, 1200);
+        },
+        // TODO: fadeLeftエフェクト
+        slideLeft: ($el) => {
+            const startX = 80;
+            $el.css({ transform: `translateX(${startX}px)`, opacity: 0, visibility: 'visible' })
+                .animate({ opacity: 1 }, {
+                    duration: 1000,
+                    step: function (now) {
+                        const x = startX * (1 - now);
+                        $(this).css('transform', `translateX(${x}px)`);
+                    }
+                });
+        }
+    };
+
+    // TODO: IntersectionObserverの設定
+    const observer = new IntersectionObserver((entries) => {
+        // entries: 監視対象の配列
+        entries.forEach(entry => {
+            // TODO: 要素が表示領域に入ったか確認
+            if (entry.isIntersecting) {
+                const $target = $(entry.target);
+                // TODO: data-animate 取得
+                const type = $target.data('animate');
+                if (animations[type]) {
+                    // クラスを削除してからアニメーション開始
+                    $target.removeClass('animate-init');
+                    // TODO: アニメーションの実行: animations[type]($target);
+                    animations[type]($target);
+                }
+                // TODO: 監視を解除 （１度きりのエフェクトにしたい場合）: unobserve(entry.target)
+                observer.unobserve(entry.target);
             }
         });
-    }
+        // 領域境界調整
+    }, { rootMargin: "-10% 0px" });
 
-    // フェードイン要素の初期スタイル
-    $('[data-fade-up]').css({
-        'opacity': 0,
-        'transform': 'translateY(40px)',
-        'transition': 'opacity 0.8s ease-out, transform 0.8s ease-out'
+    // data-animate属性を持つ要素を監視
+    $('[data-animate]').each(function () {
+        // TODO: 監視開始: observe(this)
+        observer.observe(this);
     });
-
-    // ====================================
-    // requestAnimationFrameでスクロール最適化
-    // ====================================
-    let ticking = false;
-    function onScroll() {
-        if (!ticking) {
-            window.requestAnimationFrame(function () {
-                updateLayers();
-                updateBgText();
-                updateCards();
-                updateProgress();
-                updateFadeUp();
-                ticking = false;
-            });
-            ticking = true;
-        }
-    }
-
-    $win.on('scroll', onScroll);
-
-    // 初期表示時にも実行
-    onScroll();
 });
