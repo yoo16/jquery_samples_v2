@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <title>Parallax World</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="css/keyframe.css">
+    <link rel="stylesheet" href="css/parallax3.css">
+</head>
+
+<body>
+
+    <!-- Scroll Progress -->
+    <div id="scroll-progress"></div>
+
+    <!-- Navigation -->
+    <nav id="nav" class="fixed top-0 w-full z-50">
+        <a href="parallax2.html" class="nav-logo css-animation fadeIn">Parallax World</a>
+        <ul class="nav-links">
+            <li><a href="#topic"      class="nav-link">Topics</a></li>
+            <li><a href="#story"      class="nav-link">Story</a></li>
+            <li><a href="#characters" class="nav-link">Characters</a></li>
+        </ul>
+    </nav>
+
+    <!-- ════════════════════════════════════════════
+         Hero — full-screen video
+    ════════════════════════════════════════════ -->
+    <section id="video" class="h-screen flex items-center justify-center relative overflow-hidden">
+        <video class="fixed top-0 left-0 w-full h-full object-cover" autoplay muted loop playsinline>
+            <source src="videos/video1.mp4" type="video/mp4">
+        </video>
+        <div class="hero-overlay"></div>
+        <div class="hero-grid"></div>
+
+        <div class="relative z-10 text-center px-4">
+            <p class="hero-eyebrow">NEO LUX — 2087</p>
+            <h1 id="copy"></h1>
+            <p class="hero-hint">Scroll to explore ↓</p>
+        </div>
+    </section>
+
+    <!-- ════════════════════════════════════════════
+         Topics  (250vh sticky)
+         Scroll through to watch the 3 cards fly in
+         from scattered positions into the grid.
+    ════════════════════════════════════════════ -->
+    <section id="topic">
+        <div class="topic-pin">
+
+            <div class="topic-header">
+                <p class="sec-label">Latest Updates</p>
+                <h2 class="sec-title grad-cyan">Topics</h2>
+            </div>
+
+            <div class="topic-cards-wrap">
+                <!-- Card 1 — flies in from bottom-left -->
+                <div class="topic-card">
+                    <img src="images/character_1.png" alt="Character 1">
+                    <div class="topic-card-body">
+                        <h3>Topic 1</h3>
+                        <p>Description of the first topic offered in this cyber world.</p>
+                    </div>
+                </div>
+
+                <!-- Card 2 — flies in from directly below -->
+                <div class="topic-card">
+                    <img src="images/character_2.png" alt="Character 2">
+                    <div class="topic-card-body">
+                        <h3>Topic 2</h3>
+                        <p>Description of the second topic offered in this cyber world.</p>
+                    </div>
+                </div>
+
+                <!-- Card 3 — flies in from bottom-right -->
+                <div class="topic-card">
+                    <img src="images/character_3.png" alt="Character 3">
+                    <div class="topic-card-body">
+                        <h3>Topic 3</h3>
+                        <p>Description of the third topic offered in this cyber world.</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ════════════════════════════════════════════
+         Story
+    ════════════════════════════════════════════ -->
+    <section id="story" class="css-animation slideBound">
+        <div class="max-w-3xl mx-auto story-inner">
+            <p class="sec-label">Background</p>
+            <h2 class="css-animation jump sec-title grad-violet">Story</h2>
+
+            <div class="css-animation dotLine space-y-10">
+                <div class="story-block">
+                    <h3>舞台</h3>
+                    <p>
+                        近未来のメガシティ「ネオ・ルクス」。高度に発展したAIとサイバーネットが人々の生活を支配しているが、
+                        その影で「データ犯罪」が急増していた。
+                    </p>
+                </div>
+                <div class="story-block">
+                    <h3>あらすじ</h3>
+                    <p>
+                        巨大ネットワーク「エデンシステム」にハッキングを試みるNOXの存在が判明。
+                        リナはその核心に迫るため、仲間と共に仮想空間と現実を行き来しながら、隠された真実と対峙していく。
+                    </p>
+                </div>
+                <div class="story-block">
+                    <h3>決断</h3>
+                    <p>
+                        やがて明らかになるのは、自身の出生と兄の死に関わる国家の機密。すべてを知った彼女が下す決断とは——。
+                        過去に自分の家族が巻き込まれたスキャンダルをきっかけに、表舞台から消えることを決意し、
+                        裏方の世界での成功を目指した。
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ════════════════════════════════════════════
+         Characters  (image parallax within each card)
+         The character illustration moves independently
+         from the card frame as you scroll past.
+    ════════════════════════════════════════════ -->
+    <section id="characters">
+
+        <div class="chars-header">
+            <p class="fade-in sec-label">Meet the Cast</p>
+            <h2 class="fade-in sec-title grad-rose">Characters</h2>
+        </div>
+
+        <!-- Row 1 -->
+        <div class="slide-in-y chars-grid" style="margin-bottom: 1.5rem;">
+            <div class="char-card">
+                <div class="char-img-wrap">
+                    <img class="char-img-inner" src="images/character_1.png" alt="Character 1">
+                </div>
+                <div class="char-body">
+                    <h3>雪村 澪（ゆきむら みお）</h3>
+                    <p>白銀の世界に佇む少女・澪。人と深く関わるのが少し苦手で、常にひとりで行動することが多い。</p>
+                </div>
+            </div>
+            <div class="char-card">
+                <div class="char-img-wrap">
+                    <img class="char-img-inner" src="images/character_2.png" alt="Character 2">
+                </div>
+                <div class="char-body">
+                    <h3>カイ＝ヴァルター</h3>
+                    <p>冷静沈着かつ理知的な若きエリート隊員。幼い頃、サイバーテロによって家族を失い、
+                       その真相を追うために警察アカデミーを最年少で卒業。</p>
+                </div>
+            </div>
+            <div class="char-card">
+                <div class="char-img-wrap">
+                    <img class="char-img-inner" src="images/character_3.png" alt="Character 3">
+                </div>
+                <div class="char-body">
+                    <h3>リナ＝カザミ</h3>
+                    <p>次世代サイバー警察「S.P.A.R.K.」に所属する精鋭オペレーター。
+                       人間離れした解析能力と近接戦闘スキルを併せ持つ。</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Row 2 -->
+        <div class="slide-in-y chars-grid">
+            <div class="char-card">
+                <div class="char-img-wrap">
+                    <img class="char-img-inner" src="images/character_4.png" alt="Character 4">
+                </div>
+                <div class="char-body">
+                    <h3>黒瀬レン</h3>
+                    <p>都市の地下犯罪ネットワークの撲滅を目的とする若手候補生。過去に「記憶障害」を負っており、
+                       失われた自分の過去を追っている。</p>
+                </div>
+            </div>
+            <div class="char-card">
+                <div class="char-img-wrap">
+                    <img class="char-img-inner" src="images/character_5.png" alt="Character 5">
+                </div>
+                <div class="char-body">
+                    <h3>綾城ハルカ</h3>
+                    <p>警察学校を首席で卒業し、現場に配属された新星。どこかレンに特別な想いを抱いており、
+                       たびたび彼をかばう行動をとる。</p>
+                </div>
+            </div>
+            <div class="char-card">
+                <div class="char-img-wrap">
+                    <img class="char-img-inner" src="images/character_6.png" alt="Character 6">
+                </div>
+                <div class="char-body">
+                    <h3>ミコ（Miko）</h3>
+                    <p>旧文明の遺跡から発掘された「失われた技術」によって生まれた存在。
+                       外見は少女だが、世界の秘密を知るキーパーソンでもある。</p>
+                </div>
+            </div>
+        </div>
+
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p class="footer-logo">Parallax World</p>
+        <small>&copy; 2024 Parallax World. All rights reserved.</small>
+    </footer>
+
+    <script src="js/parallax3.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,388 @@
+:root {
+    --nav-height: 70px;
+    --cyan:   #00d4ff;
+    --violet: #8b5cf6;
+    --rose:   #f43f5e;
+    --bg:     #04040d;
+    --surface:#08081a;
+    --card:   #0d0d22;
+    --border: rgba(255, 255, 255, 0.07);
+    --text:   #e2e8f0;
+    --muted:  #475569;
+    --glow-cyan:   0 0 40px rgba(0, 212, 255, 0.2);
+    --glow-violet: 0 0 40px rgba(139, 92, 246, 0.2);
+    --glow-rose:   0 0 40px rgba(244, 63, 94, 0.2);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+    overflow-x: hidden;
+}
+
+/* ============================================================
+   Scroll Progress
+============================================================ */
+#scroll-progress {
+    position: fixed;
+    top: 0; left: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--cyan), var(--violet), var(--rose));
+    z-index: 200;
+    width: 0%;
+    transition: width 0.1s linear;
+}
+
+/* ============================================================
+   Navigation
+============================================================ */
+#nav {
+    height: var(--nav-height);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    background: rgba(4, 4, 13, 0.75);
+    border-bottom: 1px solid var(--border);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+}
+
+.nav-logo {
+    font-weight: 800;
+    font-size: 1.2rem;
+    letter-spacing: -0.03em;
+    text-decoration: none;
+    background: linear-gradient(135deg, var(--cyan) 0%, var(--violet) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.nav-links { display: flex; list-style: none; gap: 0.25rem; }
+
+.nav-link {
+    font-size: 0.85rem;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    border-radius: 9999px;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.2s, background 0.2s;
+}
+.nav-link:hover { color: var(--text); background: rgba(255, 255, 255, 0.06); }
+
+/* ============================================================
+   Hero
+============================================================ */
+.hero-overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(180deg,
+        rgba(4,4,13,0.45) 0%,
+        rgba(4,4,13,0.10) 50%,
+        rgba(4,4,13,0.85) 100%);
+    z-index: 1;
+}
+
+.hero-grid {
+    position: absolute; inset: 0;
+    background-image:
+        linear-gradient(rgba(0,212,255,0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,212,255,0.05) 1px, transparent 1px);
+    background-size: 64px 64px;
+    z-index: 2;
+}
+
+.hero-eyebrow {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: rgba(0, 212, 255, 0.7);
+    margin-bottom: 2rem;
+}
+
+#copy {
+    font-size: clamp(1.75rem, 4.5vw, 3.25rem);
+    font-weight: 900;
+    color: #fff;
+    letter-spacing: -0.025em;
+    text-shadow: 0 0 60px rgba(0, 212, 255, 0.5);
+    background: rgba(4, 4, 13, 0.55);
+    backdrop-filter: blur(12px);
+    padding: 1.5rem 3rem;
+    border-radius: 1rem;
+    border: 1px solid rgba(0, 212, 255, 0.2);
+    min-height: 5rem;
+    display: inline-block;
+}
+
+#copy::after {
+    content: '|';
+    color: var(--cyan);
+    margin-left: 2px;
+    animation: blink 0.8s step-end infinite;
+}
+
+.hero-hint {
+    margin-top: 2.5rem;
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.3);
+    animation: hint-bounce 2.5s ease-in-out infinite;
+}
+
+@keyframes blink       { 50% { opacity: 0; } }
+@keyframes hint-bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(8px)} }
+
+/* ============================================================
+   Section commons
+============================================================ */
+.sec-label {
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 0.75rem;
+}
+
+.sec-title {
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-weight: 900;
+    letter-spacing: -0.04em;
+    line-height: 1;
+    margin-bottom: 3.5rem;
+}
+
+.grad-cyan   { background: linear-gradient(135deg, var(--cyan)   20%, #fff 100%);             -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+.grad-violet { background: linear-gradient(135deg, var(--violet) 20%, var(--cyan) 100%);      -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+.grad-rose   { background: linear-gradient(135deg, var(--rose)   20%, var(--violet) 100%);    -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+
+/* ============================================================
+   Topics  —  250 vh sticky scatter-reveal
+   Cards fly in from scattered positions as you scroll
+   through the section; the inner pin stays fixed.
+============================================================ */
+#topic {
+    height: 250vh;
+    background: var(--surface);
+}
+
+.topic-pin {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 0 2.5rem;
+    overflow: hidden;
+}
+
+.topic-header {
+    max-width: 72rem;
+    margin: 0 auto 2.5rem;
+    width: 100%;
+}
+
+.topic-cards-wrap {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    max-width: 72rem;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.topic-card {
+    opacity: 0;                     /* JS controls opacity & transform */
+    will-change: transform, opacity;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 1.25rem;
+    overflow: hidden;
+    transition: border-color 0.3s, box-shadow 0.3s;
+    cursor: default;
+}
+
+.topic-card:hover {
+    border-color: rgba(0, 212, 255, 0.4);
+    box-shadow: var(--glow-cyan), 0 20px 48px rgba(0,0,0,0.5);
+}
+
+.topic-card img { width: 100%; display: block; }
+
+.topic-card-body { padding: 1.5rem; }
+
+.topic-card-body h3 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 0.5rem;
+}
+
+.topic-card-body p {
+    font-size: 0.825rem;
+    color: var(--muted);
+    line-height: 1.7;
+}
+
+/* ============================================================
+   Story
+============================================================ */
+#story {
+    background: var(--bg);
+    padding: 8rem 2rem;
+    position: relative;
+    overflow: hidden;
+}
+
+#story::before {
+    content: 'STORY';
+    position: absolute;
+    font-size: 22vw;
+    font-weight: 900;
+    color: rgba(139, 92, 246, 0.035);
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    letter-spacing: -0.05em;
+    pointer-events: none;
+    white-space: nowrap;
+    z-index: 0;
+}
+
+.story-inner { position: relative; z-index: 1; }
+
+.story-block {
+    padding-left: 1.75rem;
+    border-left: 2px solid rgba(139, 92, 246, 0.45);
+}
+
+.story-block h3 {
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--violet);
+    margin-bottom: 0.75rem;
+}
+
+.story-block p {
+    font-size: 0.975rem;
+    line-height: 1.9;
+    color: #8899bb;
+}
+
+/* ============================================================
+   Characters  —  image floats inside card frame on scroll
+   Each card's image travels at a different rate than the
+   card itself, creating depth within the bounded frame.
+============================================================ */
+#characters {
+    background: var(--surface);
+    padding: 8rem 2rem;
+}
+
+.chars-header {
+    max-width: 72rem;
+    margin: 0 auto 4rem;
+}
+
+.chars-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    max-width: 72rem;
+    margin: 0 auto;
+}
+
+.char-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 1.5rem;
+    overflow: hidden;
+    transition: transform 0.4s ease, box-shadow 0.4s ease, border-color 0.4s ease;
+}
+
+.char-card:hover {
+    transform: translateY(-10px) scale(1.015);
+    border-color: rgba(244, 63, 94, 0.4);
+    box-shadow: var(--glow-rose), 0 24px 60px rgba(0,0,0,0.5);
+}
+
+/* Bounded frame — image parallax happens inside here */
+.char-img-wrap {
+    height: 280px;
+    overflow: hidden;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    background: radial-gradient(ellipse at 50% 110%,
+        rgba(139, 92, 246, 0.18) 0%,
+        rgba(244, 63, 94, 0.05) 50%,
+        transparent 75%);
+    position: relative;
+}
+
+/* This image is controlled by charImgParallax() in JS */
+.char-img-inner {
+    width: 160px;
+    height: auto;
+    will-change: transform;
+    display: block;
+    object-fit: contain;
+    flex-shrink: 0;
+}
+
+.char-body {
+    padding: 1.5rem 1.5rem 2rem;
+    border-top: 1px solid var(--border);
+}
+
+.char-body h3 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 0.5rem;
+}
+
+.char-body p {
+    font-size: 0.8rem;
+    color: var(--muted);
+    line-height: 1.75;
+}
+
+/* ============================================================
+   Scroll-driven initial states
+============================================================ */
+.slide-in-y { opacity: 0; transform: translateY(40px); }
+.fade-in    { opacity: 0; }
+
+/* ============================================================
+   Footer
+============================================================ */
+footer {
+    background: #02020a;
+    border-top: 1px solid var(--border);
+    padding: 4rem 2rem;
+    text-align: center;
+}
+
+.footer-logo {
+    display: inline-block;
+    font-size: 1.5rem;
+    font-weight: 900;
+    letter-spacing: -0.03em;
+    background: linear-gradient(135deg, var(--cyan), var(--violet));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 0.75rem;
+}
+
+footer small { font-size: 0.775rem; color: var(--muted); }
