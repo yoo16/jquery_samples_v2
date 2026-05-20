@@ -16,6 +16,21 @@ $(document).ready(function () {
             // $el.css({ width: '0%', opacity: 0, visibility: 'visible' })
             //     .animate({ width: '100%', opacity: 1 }, 1200);
         },
+        typewriter: ($el) => {
+            // 現在のテキストを取得
+            const text = $el.text().trim();
+            // テキストを空にしてから表示
+            $el.text('').css({ opacity: 1, visibility: 'visible' });
+            let i = 0;
+            let current = '';
+            // TODO: タイプライターエフェクトの実装
+            const interval = setInterval(() => {
+                // current += text[i];
+                // $el.text(current);
+                // i++;
+                // if (i >= text.length) clearInterval(interval);
+            }, 80);
+        },
         // TODO: fadeLeftエフェクト
         slideLeft: ($el) => {
             // const startX = 80;
@@ -30,15 +45,15 @@ $(document).ready(function () {
         }
     };
 
-    // TODO: IntersectionObserverの設定
+    // IntersectionObserverの設定
     const observer = new IntersectionObserver((entries) => {
         // entries: 監視対象の配列
         entries.forEach(entry => {
-            // TODO: 要素が表示領域に入ったか確認
-            if (false) {
+            // 要素が表示領域に入ったか確認
+            if (entry.isIntersecting) {
                 const $target = $(entry.target);
                 // TODO: data-animate 取得
-                const type = '';
+                const type = "";
                 if (animations[type]) {
                     // クラスを削除してからアニメーション開始
                     $target.removeClass('animate-init');

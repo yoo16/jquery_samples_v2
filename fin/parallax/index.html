@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Aurora Pro - 次世代を、その手に。</title>
+  <meta name="description" content="Aurora Proは、革新的なM-Coreチップ、息をのむディスプレイ、そして一日中使えるバッテリーを搭載。" />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"SF Pro Display"', '"Hiragino Sans"', '"Yu Gothic"', 'sans-serif'],
+          },
+          colors: {
+            ink: '#1d1d1f',
+            paper: '#f5f5f7',
+            mute: '#86868b',
+          },
+        },
+      },
+    };
+  </script>
+
+  <style>
+    html {
+      scroll-behavior: smooth;
+    }
+    body {
+      font-family: 'SF Pro Display', 'Hiragino Sans', 'Yu Gothic', sans-serif;
+      -webkit-font-smoothing: antialiased;
+      background: #fff;
+      color: #1d1d1f;
+      overflow-x: hidden;
+    }
+
+    /* === パララックス用ベーススタイル === */
+    .pin-section {
+      position: relative;
+    }
+    .pin-stage {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    /* === スクロールで現れる要素 === */
+    .reveal {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 1s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 1s cubic-bezier(0.22, 1, 0.36, 1);
+      will-change: opacity, transform;
+    }
+    .reveal.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* === グラデ背景 === */
+    .gradient-dark {
+      background: radial-gradient(
+          ellipse at top,
+          #2a2a2e 0%,
+          #1d1d1f 45%,
+          #000 100%
+        );
+    }
+    .gradient-aurora {
+      background: linear-gradient(
+        135deg,
+        #0a0a0a 0%,
+        #1a0a2e 35%,
+        #16213e 65%,
+        #0a0a0a 100%
+      );
+    }
+
+    /* === テキストグラデ === */
+    .text-aurora {
+      background: linear-gradient(
+        90deg,
+        #a78bfa 0%,
+        #60a5fa 50%,
+        #34d399 100%
+      );
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    /* === Hero === */
+    .hero-product {
+      will-change: transform, opacity;
+    }
+
+    /* === Chipセクション円形のグロー === */
+    .chip-glow {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(
+        circle at center,
+        rgba(167, 139, 250, 0.3) 0%,
+        rgba(96, 165, 250, 0.15) 30%,
+        transparent 60%
+      );
+      filter: blur(40px);
+      pointer-events: none;
+    }
+
+    /* === スペック数値カウンタ === */
+    .spec-number {
+      font-feature-settings: 'tnum';
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* ノイズオーバーレイ（質感用） */
+    .noise::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.4'/%3E%3C/svg%3E");
+      opacity: 0.04;
+      pointer-events: none;
+      mix-blend-mode: overlay;
+    }
+
+    /* スクロールヒント */
+    .scroll-hint {
+      animation: scrollHint 2s ease-in-out infinite;
+    }
+    @keyframes scrollHint {
+      0%, 100% { transform: translateY(0); opacity: 0.6; }
+      50% { transform: translateY(8px); opacity: 1; }
+    }
+
+    /* カードホバー */
+    .card-hover {
+      transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .card-hover:hover {
+      transform: translateY(-8px);
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ===================== ナビゲーション ===================== -->
+  <nav id="nav" class="fixed top-0 inset-x-0 z-50 backdrop-blur-xl bg-white/70 border-b border-black/5 transition-all">
+    <div class="max-w-6xl mx-auto px-6 h-12 flex items-center justify-between text-sm">
+      <a href="#" class="font-semibold tracking-tight">Aurora</a>
+      <ul class="hidden md:flex items-center gap-8 text-ink/80">
+        <li><a href="#hero" class="hover:text-ink">概要</a></li>
+        <li><a href="#chip" class="hover:text-ink">チップ</a></li>
+        <li><a href="#display" class="hover:text-ink">ディスプレイ</a></li>
+        <li><a href="#battery" class="hover:text-ink">バッテリー</a></li>
+        <li><a href="#buy" class="hover:text-ink">購入</a></li>
+      </ul>
+      <a href="#buy" class="px-4 py-1.5 rounded-full bg-ink text-white text-xs font-medium hover:bg-ink/85 transition">
+        予約注文
+      </a>
+    </div>
+  </nav>
+
+  <!-- ===================== HERO (ピン留めパララックス) ===================== -->
+  <section id="hero" class="pin-section" style="height: 250vh;">
+    <div class="pin-stage gradient-dark text-white">
+
+      <!-- 背景の光彩 -->
+      <div class="absolute inset-0 pointer-events-none">
+        <div class="absolute top-1/3 left-1/2 -translate-x-1/2 w-[1200px] h-[1200px] rounded-full opacity-40"
+             style="background: radial-gradient(circle, rgba(96,165,250,0.5) 0%, transparent 60%); filter: blur(80px);">
+        </div>
+      </div>
+
+      <div class="relative z-10 text-center px-6">
+        <p data-hero="eyebrow" class="text-sm md:text-base text-mute mb-4 tracking-wide">新登場</p>
+
+        <h1 data-hero="title" class="text-6xl md:text-9xl font-bold tracking-tight leading-none">
+          Aurora <span class="text-aurora">Pro</span>
+        </h1>
+
+        <p data-hero="tagline" class="mt-6 text-2xl md:text-4xl font-light text-white/85">
+          次世代を、その手に。
+        </p>
+
+        <p data-hero="sub" class="mt-4 text-base md:text-lg text-mute">
+          M-Coreチップを搭載。すべてが、新しい。
+        </p>
+
+        <div data-hero="cta" class="mt-10 flex items-center justify-center gap-4">
+          <a href="#buy" class="px-6 py-2.5 rounded-full bg-white text-ink font-medium text-sm hover:bg-white/90 transition">
+            予約注文する
+          </a>
+          <a href="#chip" class="px-6 py-2.5 rounded-full border border-white/30 text-white font-medium text-sm hover:bg-white/10 transition">
+            詳しく見る →
+          </a>
+        </div>
+
+        <!-- 製品画像（SVGで描画） -->
+        <div data-hero="product" class="hero-product mt-16 mx-auto max-w-3xl">
+          <svg viewBox="0 0 800 500" xmlns="http://www.w3.org/2000/svg" class="w-full">
+            <!-- ノートPC本体 -->
+            <defs>
+              <linearGradient id="screenGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#1a1a2e"/>
+                <stop offset="50%" stop-color="#16213e"/>
+                <stop offset="100%" stop-color="#0a0a0a"/>
+              </linearGradient>
+              <linearGradient id="bodyGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stop-color="#3a3a3c"/>
+                <stop offset="100%" stop-color="#1c1c1e"/>
+              </linearGradient>
+              <linearGradient id="chipGlow" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#a78bfa"/>
+                <stop offset="50%" stop-color="#60a5fa"/>
+                <stop offset="100%" stop-color="#34d399"/>
+              </linearGradient>
+            </defs>
+            <!-- ディスプレイ部 -->
+            <rect x="100" y="60" width="600" height="370" rx="14" fill="url(#bodyGrad)" stroke="#48484a" stroke-width="1"/>
+            <rect x="115" y="78" width="570" height="334" rx="4" fill="url(#screenGrad)"/>
+            <!-- 画面内チップアートワーク -->
+            <g transform="translate(400 245)">
+              <rect x="-80" y="-80" width="160" height="160" rx="20" fill="none" stroke="url(#chipGlow)" stroke-width="2" opacity="0.9"/>
+              <rect x="-50" y="-50" width="100" height="100" rx="10" fill="url(#chipGlow)" opacity="0.3"/>
+              <text x="0" y="8" text-anchor="middle" font-family="SF Pro Display" font-size="22" font-weight="700" fill="#fff">M-Core</text>
+            </g>
+            <!-- ベース（キーボード部） -->
+            <path d="M 80 430 L 720 430 L 740 470 L 60 470 Z" fill="url(#bodyGrad)" stroke="#48484a" stroke-width="1"/>
+            <rect x="370" y="438" width="60" height="3" rx="1.5" fill="#48484a"/>
+          </svg>
+        </div>
+
+        <div class="scroll-hint mt-12 inline-flex flex-col items-center gap-2 text-mute text-xs">
+          <span>SCROLL</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+            <path d="M12 5v14M5 12l7 7 7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== ハイライトのカード並び ===================== -->
+  <section class="py-32 px-6 bg-paper">
+    <div class="max-w-6xl mx-auto">
+      <h2 class="reveal text-4xl md:text-6xl font-bold tracking-tight mb-16">
+        まずは、<br/>ハイライトから。
+      </h2>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <article class="reveal card-hover bg-white rounded-3xl p-8 aspect-[4/5] flex flex-col justify-between overflow-hidden relative">
+          <div>
+            <p class="text-xs text-mute tracking-widest">CHIP</p>
+            <h3 class="mt-3 text-2xl font-semibold leading-snug">
+              M-Core、M-Core Pro、<br/>そしてM-Core Max。
+            </h3>
+          </div>
+          <div class="flex items-end justify-center h-48">
+            <div class="w-32 h-32 rounded-2xl bg-gradient-to-br from-purple-400 via-blue-400 to-emerald-400 shadow-2xl rotate-6"></div>
+          </div>
+        </article>
+
+        <article class="reveal card-hover bg-ink text-white rounded-3xl p-8 aspect-[4/5] flex flex-col justify-between overflow-hidden relative">
+          <div>
+            <p class="text-xs text-white/50 tracking-widest">AI</p>
+            <h3 class="mt-3 text-2xl font-semibold leading-snug">
+              AIのために、<br/>ゼロから設計。
+            </h3>
+          </div>
+          <div class="flex items-end justify-center h-48 relative">
+            <div class="absolute w-40 h-40 rounded-full"
+                 style="background: radial-gradient(circle, rgba(167,139,250,0.6) 0%, transparent 70%); filter: blur(20px);"></div>
+            <p class="relative text-7xl font-bold text-aurora">∞</p>
+          </div>
+        </article>
+
+        <article class="reveal card-hover bg-white rounded-3xl p-8 aspect-[4/5] flex flex-col justify-between overflow-hidden relative">
+          <div>
+            <p class="text-xs text-mute tracking-widest">BATTERY</p>
+            <h3 class="mt-3 text-2xl font-semibold leading-snug">
+              最大24時間。<br/>充電器、置いていける。
+            </h3>
+          </div>
+          <div class="flex items-end justify-center h-48">
+            <p class="text-8xl font-bold spec-number">24<span class="text-2xl text-mute font-normal">h</span></p>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== CHIP セクション (ピン + スケール) ===================== -->
+  <section id="chip" class="pin-section gradient-aurora text-white" style="height: 350vh;">
+    <div class="pin-stage noise">
+      <div class="chip-glow" data-chip="glow"></div>
+
+      <div class="relative z-10 text-center px-6 max-w-4xl">
+        <p data-chip="eyebrow" class="text-sm text-mute mb-4 tracking-widest opacity-0">パフォーマンス</p>
+
+        <!-- 巨大な"M-Core" - スクロールで縮小・ぼけ -->
+        <div data-chip="logo" class="relative inline-block">
+          <div class="absolute inset-0 blur-3xl opacity-50 bg-gradient-to-r from-purple-500 via-blue-500 to-emerald-500"></div>
+          <h2 class="relative text-7xl md:text-[10rem] font-black tracking-tighter leading-none text-aurora">
+            M-Core
+          </h2>
+        </div>
+
+        <h3 data-chip="title" class="mt-8 text-3xl md:text-5xl font-bold opacity-0 leading-tight">
+          このパワー、<br/>夢じゃない。
+        </h3>
+
+        <p data-chip="desc" class="mt-6 text-lg text-white/70 max-w-2xl mx-auto opacity-0">
+          シングルスレッドとマルチスレッドの並外れたCPUパフォーマンス。
+          より高速なユニファイドメモリ。M-Coreファミリーのどのチップを選んでも、
+          常識を超えるスピードを届けます。
+        </p>
+
+        <!-- スペックの数値 -->
+        <div data-chip="stats" class="mt-12 grid grid-cols-3 gap-8 opacity-0">
+          <div>
+            <p class="text-5xl md:text-6xl font-bold spec-number text-aurora">8<span class="text-xl">×</span></p>
+            <p class="text-sm text-mute mt-2">高速なAIパフォーマンス</p>
+          </div>
+          <div>
+            <p class="text-5xl md:text-6xl font-bold spec-number text-aurora">2<span class="text-xl">×</span></p>
+            <p class="text-sm text-mute mt-2">SSDストレージ速度</p>
+          </div>
+          <div>
+            <p class="text-5xl md:text-6xl font-bold spec-number text-aurora">40<span class="text-xl">コア</span></p>
+            <p class="text-sm text-mute mt-2">GPU最大コア数</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== ディスプレイ ===================== -->
+  <section id="display" class="py-32 px-6 bg-black text-white overflow-hidden">
+    <div class="max-w-6xl mx-auto">
+      <div class="text-center">
+        <p class="reveal text-sm text-mute tracking-widest mb-4">ディスプレイ</p>
+        <h2 class="reveal text-5xl md:text-8xl font-bold tracking-tight">
+          見事な、光景。
+        </h2>
+        <p class="reveal mt-6 text-lg text-white/60 max-w-2xl mx-auto">
+          Liquid Auroraディスプレイは、HDRで1,600ニトのピーク輝度に対応。
+          屋外でも、暗いスタジオでも、見たままが、見える。
+        </p>
+      </div>
+
+      <!-- ビジュアルブロック -->
+      <div class="reveal mt-20 relative aspect-[16/9] rounded-3xl overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-br from-pink-500 via-purple-600 to-blue-700"></div>
+        <div class="absolute inset-0 backdrop-blur-3xl opacity-50"
+             style="background: radial-gradient(circle at 30% 40%, rgba(255,200,100,0.6), transparent 50%),
+                                radial-gradient(circle at 70% 60%, rgba(100,200,255,0.5), transparent 50%);">
+        </div>
+        <div class="relative h-full flex items-center justify-center">
+          <p class="text-6xl md:text-9xl font-bold text-white/95 spec-number tracking-tight">
+            1,600
+            <span class="text-xl md:text-3xl text-white/70 font-normal align-top">ニト</span>
+          </p>
+        </div>
+      </div>
+
+      <!-- 横並びのスペック -->
+      <div class="mt-20 grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+        <div class="reveal">
+          <p class="text-4xl md:text-5xl font-bold spec-number">1,600</p>
+          <p class="text-xs text-mute mt-2">ピークHDR輝度（ニト）</p>
+        </div>
+        <div class="reveal">
+          <p class="text-4xl md:text-5xl font-bold spec-number">1,000,000<span class="text-xl">:1</span></p>
+          <p class="text-xs text-mute mt-2">コントラスト比</p>
+        </div>
+        <div class="reveal">
+          <p class="text-4xl md:text-5xl font-bold spec-number">120<span class="text-xl">Hz</span></p>
+          <p class="text-xs text-mute mt-2">リフレッシュレート</p>
+        </div>
+        <div class="reveal">
+          <p class="text-4xl md:text-5xl font-bold spec-number">10<span class="text-xl">億</span></p>
+          <p class="text-xs text-mute mt-2">表示できるカラー</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== バッテリー (ピン + 横スクロール風) ===================== -->
+  <section id="battery" class="pin-section bg-paper" style="height: 250vh;">
+    <div class="pin-stage">
+      <div class="relative z-10 text-center px-6 max-w-4xl">
+        <p class="text-sm text-mute mb-4 tracking-widest">バッテリー</p>
+        <h2 class="text-5xl md:text-7xl font-bold tracking-tight leading-tight">
+          一日中使える。<br/>
+          <span data-battery="word">充電器</span>からの、解放。
+        </h2>
+
+        <!-- 巨大数字 -->
+        <div data-battery="counter" class="mt-12">
+          <p class="font-bold tracking-tighter leading-none spec-number">
+            <span data-battery="num" class="text-[10rem] md:text-[16rem]">0</span>
+            <span class="text-3xl md:text-5xl text-mute font-light align-top">時間</span>
+          </p>
+          <p class="text-lg text-mute mt-4">Aurora史上、最長のバッテリー駆動時間</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== AI ===================== -->
+  <section class="py-32 px-6 bg-white">
+    <div class="max-w-5xl mx-auto text-center">
+      <p class="reveal text-sm text-mute tracking-widest mb-4">人工知能</p>
+      <h2 class="reveal text-5xl md:text-7xl font-bold tracking-tight leading-tight">
+        AIの可能性を、<br/>
+        <span class="text-aurora">引き上げる。</span>
+      </h2>
+      <p class="reveal mt-8 text-lg text-mute max-w-2xl mx-auto">
+        パワフルなNeural Acceleratorsが、あらゆるAIタスクを驚くべき速さで処理します。
+        オンデバイスで、プライバシーを守りながら。
+      </p>
+
+      <div class="reveal mt-16 grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="bg-paper rounded-3xl p-8 text-left card-hover">
+          <p class="text-5xl font-bold spec-number text-aurora">7.6<span class="text-xl">×</span></p>
+          <p class="mt-4 font-semibold">画像生成</p>
+          <p class="text-sm text-mute mt-1">前世代と比較した処理速度</p>
+        </div>
+        <div class="bg-paper rounded-3xl p-8 text-left card-hover">
+          <p class="text-5xl font-bold spec-number text-aurora">6.8<span class="text-xl">×</span></p>
+          <p class="mt-4 font-semibold">LLM処理</p>
+          <p class="text-sm text-mute mt-1">最初のトークン生成までの時間</p>
+        </div>
+        <div class="bg-paper rounded-3xl p-8 text-left card-hover">
+          <p class="text-5xl font-bold spec-number text-aurora">5.1<span class="text-xl">×</span></p>
+          <p class="mt-4 font-semibold">3Dレンダリング</p>
+          <p class="text-sm text-mute mt-1">レイトレーシング使用時</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== 購入 ===================== -->
+  <section id="buy" class="py-32 px-6 gradient-dark text-white">
+    <div class="max-w-4xl mx-auto text-center">
+      <h2 class="reveal text-5xl md:text-7xl font-bold tracking-tight">
+        さあ、はじめよう。
+      </h2>
+      <p class="reveal mt-6 text-xl text-white/70">
+        Aurora Proは、3月11日発売。<br/>
+        いま予約注文できます。
+      </p>
+
+      <div class="reveal mt-12 flex flex-col md:flex-row items-center justify-center gap-4">
+        <a href="#" class="px-8 py-3.5 rounded-full bg-white text-ink font-medium hover:bg-white/90 transition">
+          予約注文する
+        </a>
+        <a href="#" class="px-8 py-3.5 rounded-full border border-white/30 hover:bg-white/10 transition">
+          詳細仕様を見る →
+        </a>
+      </div>
+
+      <p class="reveal mt-12 text-sm text-mute">
+        ¥298,000から、または月々¥4,966から（60回払い）
+      </p>
+    </div>
+  </section>
+
+  <!-- ===================== フッター ===================== -->
+  <footer class="bg-paper py-12 px-6 text-xs text-mute">
+    <div class="max-w-6xl mx-auto">
+      <p>© 2026 Aurora Inc. このページはApple Inc.のMacBook Proページ（apple.com/jp/macbook-pro）を参考にした学習目的のデモです。実在の製品ではありません。</p>
+    </div>
+  </footer>
+
+  <!-- ========== JS（分離） ========== -->
+  <script src="js/reveal.js" defer></script>
+  <script src="js/hero-parallax.js" defer></script>
+  <script src="js/chip-parallax.js" defer></script>
+  <script src="js/battery-counter.js" defer></script>
+  <script src="js/nav.js" defer></script>
+</body>
+</html>

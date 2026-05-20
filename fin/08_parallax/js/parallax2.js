@@ -16,6 +16,19 @@ $(document).ready(function () {
             $el.css({ width: '0%', opacity: 0, visibility: 'visible' })
                 .animate({ width: '100%', opacity: 1 }, 1200);
         },
+        // TODO: タイプライターエフェクト
+        typewriter: ($el) => {
+            const text = $el.text().trim();
+            $el.text('').css({ opacity: 1, visibility: 'visible' });
+            let i = 0;
+            let current = '';
+            const interval = setInterval(() => {
+                current += text[i];
+                $el.text(current);
+                i++;
+                if (i >= text.length) clearInterval(interval);
+            }, 80);
+        },
         // TODO: fadeLeftエフェクト
         slideLeft: ($el) => {
             const startX = 80;
