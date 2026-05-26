@@ -3,7 +3,11 @@ session_start();
 header('Content-Type: application/json');
 
 $input = json_decode(file_get_contents('php://input'), true);
-$id = $input['id'] ?? null;
+$id = $input['id'] ?? ($input['productId'] ?? null);
+
+if (!isset($_SESSION['cart'])) {
+    $_SESSION['cart'] = [];
+}
 
 if ($id && isset($_SESSION['cart'])) {
     unset($_SESSION['cart'][$id]); 

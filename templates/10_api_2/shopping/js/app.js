@@ -3,13 +3,13 @@ const grid = document.getElementById('product-grid');
 const loader = document.getElementById('loading-modal');
 const detailModal = document.getElementById('detail-modal');
 const detailContent = document.getElementById('detail-content');
-const closeDetail = document.getElementById('close-detail');
+const closeButton = document.getElementById('close-detail');
 const badge = document.getElementById('cart-count');
 const cartOpenBtn = document.getElementById('cart-open-btn');
 const cartCloseBtn = document.getElementById('cart-close-btn');
 const cartModal = document.getElementById('cart-modal');
 
-// URL
+// カートAPIのベースURL
 const cartApiURL = 'api/cart/';
 
 // 商品データ
@@ -27,7 +27,7 @@ async function fetchProducts() {
         // APIレスポンスをチェック
         if (!response.ok) showFlash('商品データの取得に失敗しました');
         // TODO: JSON形式でレスポンスを取得: json()
-        allProducts = {};
+        allProducts = [];
         // 商品一覧を描画
         renderProducts(allProducts);
     } catch (error) {
@@ -47,16 +47,16 @@ function renderProducts(products) {
                 <img src="" alt="${p.title}" class="max-h-full object-contain">
             </div>
             <div class="p-4 border-t">
-                <span class="text-xs text-sky-500 font-semibold uppercase"></span>
-                <h2 class="text-sm font-bold text-gray-800 mt-1 line-clamp-2"></h2>
+                <span class="text-xs text-sky-500 font-semibold uppercase">カテゴリ</span>
+                <h2 class="text-sm font-bold text-gray-800 mt-1 line-clamp-2">タイトル</h2>
                 
                 <div class="flex items-center mt-2">
                     <span class="text-yellow-400 text-xs">★</span>
-                    <span class="text-xs font-bold ml-1"></span>
-                    <span class="text-xs text-gray-400 ml-2"></span>
+                    <span class="text-xs font-bold ml-1">評価</span>
+                    <span class="text-xs text-gray-400 ml-2">(レビュー数)</span>
                 </div>
 
-                <p class="text-lg font-bold text-gray-900 mt-2"></p>
+                <p class="text-lg font-bold text-gray-900 mt-2">$価格</p>
             </div>
         </div>
     `).join('');
@@ -127,7 +127,7 @@ async function addToCart(productId) {
         const response = await fetch(uri, {
             method: '',
             headers: { 'Content-Type': 'application/json' },
-            body: '',
+            body: "",
         });
         // JSON形式でレスポンスを取得
         const result = await response.json();
@@ -194,11 +194,12 @@ function updateCartList(cartObj) {
 // 個数変更関数
 async function updateQuantity(productId, qty) {
     const uri = cartApiURL + "update.php";
+    const nextQty = Math.max(1, parseInt(qty, 10) || 1);
     // POSTリクエストで商品ID(productId)と個数(qty)をJSONで送信
     const response = await fetch(uri, {
-        method: '',
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: '',
+        body: JSON.stringify({ id: productId, qty: nextQty }),
     });
     // JSON形式でレスポンスを取得
     const result = await response.json();
@@ -206,24 +207,31 @@ async function updateQuantity(productId, qty) {
     if (result.status === 'success') {
         updateCartBadge(result.cartCount);
         updateCartList(result.cart);
+    } else {
+        showFlash('数量の更新に失敗しました');
     }
 }
 
 // カートから商品を削除
 async function removeItem(productId) {
     const uri = cartApiURL + "remove.php";
-    // POSTリクエストで商品IDを送信
+    if (!confirm('商品ID ' + productId + ' を削除しますか？')) {
+        return;
+    }
+
+    // TODO: POSTリクエストで商品ID(id = productId)を送信
     const result = await fetch(uri, {
-        method: 'POST',
+        method: '',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id: productId })
+        body: "",
     });
     // JSON形式でレスポンスを取得
     const data = await result.json();
+    updateCartBadge(data.cartCount);
+    updateCartList(data.cart);
+
     // カート更新結果をチェック
     if (data.status === 'success') {
-        updateCartBadge(data.cartCount);
-        updateCartList(data.cart);
         showFlash('カートから削除しました');
     } else {
         showFlash('削除に失敗しました');
@@ -243,6 +251,11 @@ function showFlash(message) {
     }, 3000);
 }
 
+const closeDetail = () => {
+    detailModal.classList.add('hidden');
+    document.body.style.overflow = '';
+}
+
 // イベントリスナー
 grid.addEventListener('click', (e) => {
     const card = e.target.closest('.product-card');
@@ -250,14 +263,13 @@ grid.addEventListener('click', (e) => {
 });
 
 // 詳細モーダルの閉じるボタン
-closeDetail.addEventListener('click', () => {
-    detailModal.classList.add('hidden');
-    document.body.style.overflow = '';
+closeButton.addEventListener('click', () => {
+    closeDetail();
 });
 
 // 詳細モーダルの外側をクリックして閉じる
 detailModal.addEventListener('click', (e) => {
-    if (e.target === detailModal) closeDetail.click();
+    if (e.target === detailModal) closeButton.click();
 });
 
 // 詳細モーダル内のカート追加ボタンのクリックイベント
@@ -265,6 +277,7 @@ detailContent.addEventListener('click', async (e) => {
     if (e.target.classList.contains('add-to-cart-btn')) {
         const productId = e.target.dataset.id;
         await addToCart(productId);
+        closeDetail();
     }
 });
 // カートモーダルの開閉
@@ -277,6 +290,5 @@ cartCloseBtn.addEventListener('click', () => cartModal.classList.add('hidden'));
 (async () => {
     // 商品データ
     await fetchProducts();
-    // カート照合
-    await fetchInitialCart();
+    // TODO: カート照合: fetchInitialCart(非同期)
 })();
