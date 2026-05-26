@@ -16,11 +16,14 @@ document.addEventListener("DOMContentLoaded", function () {
         if (!response.ok) {
             throw new Error("network");
         }
-
         return response.json();
     }
 
     async function loadQuoteEntries() {
+        // 直列処理
+        // const quotes = await fetchJson("./data/quotes.json");   // 1秒待つ
+        // const authors = await fetchJson("./data/authors.json"); // さらに1秒待つ
+        // 並列処理
         const [quotes, authors] = await Promise.all([
             fetchJson("./data/quotes.json"),
             fetchJson("./data/authors.json")
