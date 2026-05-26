@@ -1,14 +1,17 @@
 const API_URL = './data/users.json';
 const resultDiv = document.getElementById('result');
 
+// XHRリクエスト（非同期）:XMLHttpRequestオブジェクトの作成
 const xhr = new XMLHttpRequest();
 // TODO: XHRリクエスト（非同期）:open() : GETリクエストを設定
 
 //  XHRリクエスト（非同期）:onload()
 xhr.onload = function () {
-    if (xhr.status === 200) {
+    // TODO: レスポンスの処理:ステータスコード: xhr.status === 200 なら成功、そうでなければ失敗
+    if (false) {
         try {
-            const users = JSON.parse(xhr.responseText);
+            // TODO: レスポンスの処理:JSON.parse() で responseText をオブジェクトに変換
+            const users = {};
             renderUsers(users);
         } catch (e) {
             showError('データの解析に失敗しました。');

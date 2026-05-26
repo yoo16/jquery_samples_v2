@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', function () {
     const errorElement = document.getElementById('error');
+    const jsonUserElement = document.getElementById('json-user');
     // JSONデータ（テキスト）
     let jsonString = "";
 
@@ -9,12 +10,15 @@ document.addEventListener('DOMContentLoaded', function () {
     /**
      * JSON から Userオブジェクト
      */
-    function loadUser() {
+    async function loadUser() {
         try {
-            // テキストエリアからJSONデータ（テキスト）を取得
-            jsonString = document.getElementById('json-user').textContent;
-            // TODO: JSONをパースし、ユーザオブジェクトに変換
+            errorElement.textContent = '';
+            // TODO: JSONファイルをフェッチして、ユーザ情報を取得
+            const response = {};
+            // TODO: 非同期 で JSONデータをJavaScriptオブジェクトに変換: response.json() を使用
             user = {};
+            // TODO: JSONデータをテキストエリアに表示: JSON.stringify を使用
+            jsonUserElement.textContent = JSON.stringify(user, null, 2);
 
             // ユーザ情報表示
             displayUser(user);
@@ -29,16 +33,16 @@ document.addEventListener('DOMContentLoaded', function () {
      */
     function updateUser() {
         try {
-            // 各フィールドから値を取得
+            // 各フィールドから値を取得: JavaScriptオブジェクトに設定
             user.name = document.getElementById('user-name').value;
             user.email = document.getElementById('user-email').value;
             user.birthday = document.getElementById('user-birthday').value;
             user.city = document.getElementById('user-city').value;
 
-            // TODO: JSONに変換
+            // TODO: JSONデータをテキストエリアに表示: JSON.stringify を使用
             jsonString = "";
             // テキストエリアにJSONデータ表示
-            document.getElementById('json-user').textContent = jsonString
+            jsonUserElement.textContent = jsonString
         } catch (error) {
             // エラー表示
             errorElement.textContent = 'JSONの形式が正しくありません: ' + error.message;
@@ -73,11 +77,9 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // イベントリスナー
-    // JSON -> Userオブジェクト
     const loadBtn = document.getElementById('load-button');
     loadBtn.addEventListener('click', loadUser);
 
-    // Userオブジェクト -> JSON
     const updateBtn = document.getElementById('update-button');
     updateBtn.addEventListener('click', updateUser);
 });

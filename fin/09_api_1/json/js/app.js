@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', function () {
     const errorElement = document.getElementById('error');
+    const jsonUserElement = document.getElementById('json-user');
     // JSONデータ（テキスト）
     let jsonString = "";
 
@@ -9,12 +10,15 @@ document.addEventListener('DOMContentLoaded', function () {
     /**
      * JSON から Userオブジェクト
      */
-    function loadUser() {
+    async function loadUser() {
         try {
-            // TODO: id="data" のテストを取得
-            jsonString = document.getElementById('data').textContent;
-            // TODO: JSONをパースし、ユーザオブジェクトに変換
-            user = JSON.parse(jsonString);
+            errorElement.textContent = '';
+            // TODO: JSONファイルをフェッチして、ユーザ情報を取得
+            const response = await fetch('./data/user.json');
+            // TODO: JSONデータをJavaScriptオブジェクトに変換
+            user = await response.json();
+            // TODO: JSONデータをテキストエリアに表示
+            jsonUserElement.textContent = JSON.stringify(user, null, 2);
 
             // ユーザ情報表示
             displayUser(user);
@@ -35,10 +39,10 @@ document.addEventListener('DOMContentLoaded', function () {
             user.birthday = document.getElementById('user-birthday').value;
             user.city = document.getElementById('user-city').value;
 
-            // TODO: JSON（テキストデータ）に変換
-            jsonString = JSON.stringify(user);
+            // TODO: JSONデータをテキストエリアに表示: JSON.stringify を使用
+            jsonString = JSON.stringify(user, null, 2);
             // テキストエリアにJSONデータ表示
-            document.getElementById('json-user').textContent = jsonString
+            jsonUserElement.textContent = jsonString
         } catch (error) {
             // エラー表示
             errorElement.textContent = 'JSONの形式が正しくありません: ' + error.message;
